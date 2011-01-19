@@ -1,0 +1,4 @@
+john.exe+2DE6E0  第一个用户
+john.exe+2DE710  第二个用户
+john.exe+302B84  进入游戏后的用户
+john.exe+41B5BC  进入游戏后的用户

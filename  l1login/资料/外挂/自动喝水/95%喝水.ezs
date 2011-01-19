@@ -1,0 +1,25 @@
+[variable]
+var1=10857133
+var2=10857133
+var3=
+var4=
+var5=
+var6=
+var7=
+var8=
+pos1=27000956
+pos2=26673258
+pos3=
+pos4=
+pos5=
+pos6=
+pos7=
+pos8=
+[script]
+Var1=50
+If Color[27000956]=10857133
+KeyPress(116)
+Delay(Var1)
+KeyPress(116)
+Delay(Var1)
+End If

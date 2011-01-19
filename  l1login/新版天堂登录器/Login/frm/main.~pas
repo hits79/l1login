@@ -1,0 +1,389 @@
+unit main;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, jpeg, ExtCtrls, ImgList, IdAntiFreezeBase,
+  IdAntiFreeze, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
+  IdHTTP, OleCtrls, SHDocVw, IdCoder, IdCoder3to4, IdCoderMIME,
+  IdTCPServer, IdMappedPortTCP,IdThread, AppEvnts,common, VCLUnZip;
+
+type
+  Tfrm_main = class(TForm)
+    img_background: TImage;
+    lbl_capation: TLabel;
+    Label7: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    lbl_qq1: TLabel;
+    lbl_Info: TLabel;
+    lbl_close: TLabel;
+    Label3: TLabel;
+    spbtn_start: TSpeedButton;
+    spbtn_close: TSpeedButton;
+    cmb_gamelist: TComboBox;
+    lbl_ver: TLabel;
+    IdAntiFreeze1: TIdAntiFreeze;
+    IdHTTP1: TIdHTTP;
+    lbl_min: TLabel;
+    IdDecoderMIME1: TIdDecoderMIME;
+    IdEncoderMIME1: TIdEncoderMIME;
+    chk_ck: TCheckBox;
+    Label1: TLabel;
+    spbtn_web: TSpeedButton;
+    spbtn_payurl: TSpeedButton;
+    apbtn_jieshao: TSpeedButton;
+    apbtn_hudong: TSpeedButton;
+    chk_wg1: TCheckBox;
+    Label2: TLabel;
+    spbtn_payurl2: TSpeedButton;
+    apbtn_xinshouka: TSpeedButton;
+    web: TWebBrowser;
+    lbl_notice: TLabel;
+    VCLUnZip1: TVCLUnZip;
+    procedure lbl_closeClick(Sender: TObject);
+    procedure spbtn_closeClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure img_backgroundMouseDown(Sender: TObject;
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure lbl_minClick(Sender: TObject);
+    procedure spbtn_startClick(Sender: TObject);
+    procedure cmb_gamelistChange(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure spbtn_webClick(Sender: TObject);
+    procedure spbtn_payurlClick(Sender: TObject);
+    procedure spbtn_payurl2Click(Sender: TObject);
+    procedure apbtn_xinshoukaClick(Sender: TObject);
+    procedure apbtn_jieshaoClick(Sender: TObject);
+    procedure apbtn_hudongClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+
+
+  private
+    { Private declarations }
+    procedure webcount;
+  public
+    { Public declarations }
+    procedure readServerCfg;
+
+  end;
+
+var
+  frm_main: Tfrm_main;
+  Cfg: LoginCfg;
+
+  CfgPath:string;  //游戏配置路径
+  Servers:array of Server; //游戏列表
+
+implementation
+uses IniFiles,load,fun,CnDES,Registry;
+{$R *.dfm}
+{$R res\res.res}
+procedure Tfrm_main.lbl_closeClick(Sender: TObject);
+begin
+Close;
+end;
+
+procedure Tfrm_main.spbtn_closeClick(Sender: TObject);
+begin
+Close;
+end;
+
+procedure Tfrm_main.readServerCfg;
+var
+  ini:TIniFile;
+  Mem:TMemoryStream;
+  ServerVer:string;//服务器版本号
+  gamecount,i:Integer;
+  memo:TStringList;
+  s:string;
+  http:TIdHTTP;
+begin
+    if Cfg.LocalCfg then
+    begin
+      //SetLength(Servers,gamecount);//设置数组大小
+      for i:=0 to Length(Servers)-1 do
+      begin
+        cmb_gamelist.Items.Add(Servers[i].serverName);
+      end;
+      cmb_gamelist.ItemIndex:=0;
+      lbl_qq1.Caption:=Servers[cmb_gamelist.ItemIndex].ServerQQ;
+      lbl_Info.Caption:='读取配置文件成功!';
+      exit;
+    end;
+
+
+    //下载保存配置文件
+    Mem:=TMemoryStream.Create;
+    try
+    IdHTTP1.Get(cfg.ServerCfg,Mem);
+    except
+      ShowMessage('读取配置信息失败!');
+      ExitProcess(0);
+    end;
+
+try
+
+
+    Mem.Seek(0,soFromBeginning);
+    with TStringStream.Create(s) do
+    begin
+       CopyFrom(Mem,mem.Size);
+       Seek(0,soFromBeginning);
+       s:=DataString;
+       Free;
+    end;
+
+    s:=IdDecoderMIME1.DecodeString(s);
+    
+    Mem.Clear;
+    mem.Seek(0,soFromBeginning);
+    Mem.Write(PChar(s)^,Length(s)+1);
+    mem.SaveToFile(CfgPath);
+    Mem.Free;
+
+    //读取配置文件
+    ini:=TIniFile.Create(CfgPath);
+    ServerVer:=ini.ReadString('ServerCfg','version','');//读取服务器版本号
+    if ServerVer<> cfg.LoginVer then
+    begin
+      ShowMessage('登陆器版本不一致,请到官方网站下载最新版本登陆器!');
+      WinExec(PAnsiChar('explorer.exe '+ string(Cfg.LoginWeb)),SW_SHOW);
+      Exit;
+    end;
+
+    gamecount:=ini.ReadInteger('ServerCfg','gamecount',0); //服务器数
+    SetLength(Servers,gamecount);//设置数组大小
+    for i:=0 to gamecount-1 do
+    begin
+      Servers[i].serverName:=ini.ReadString('ServerCfg','servername'+inttostr(i),'');
+      Servers[i].serverIp:=ini.ReadString('ServerCfg','serverip'+inttostr(i),'');
+      Servers[i].ServerWeb:=ini.ReadString('ServerCfg','serverweb'+inttostr(i),'');
+      Servers[i].ServerQQ:=ini.ReadString('ServerCfg','serverqq'+inttostr(i),'');
+      cmb_gamelist.Items.Add(Servers[i].serverName);
+    end;
+
+    cmb_gamelist.ItemIndex:=0;
+    http:=TIdHTTP.Create(nil);
+    lbl_notice.Caption:= http.Get(Servers[cmb_gamelist.ItemIndex].ServerWeb);
+    http.Free;
+    lbl_qq1.Caption:=Servers[cmb_gamelist.ItemIndex].ServerQQ;
+    lbl_Info.Caption:='读取配置文件成功!';
+    memo:=TStringList.Create;
+    Memo.LoadFromFile(CfgPath);
+    Memo.Text := IdEncoderMIME1.EncodeString(Memo.Text);
+    Memo.SaveToFile(CfgPath);
+    memo.Free;
+
+  except
+
+    lbl_Info.Caption:='读取配置文件失败,请联系客服!';
+  end;
+
+end;
+
+procedure Tfrm_main.FormActivate(Sender: TObject);
+begin
+
+  Cfg.LoginName := DESDecryptStr(Cfg.LoginName,key);
+  Cfg.LoginVer := DESDecryptStr(Cfg.LoginVer,key);
+  Cfg.ServerCfg := DESDecryptStr(Cfg.ServerCfg,key);
+  Cfg.LoginWeb := DESDecryptStr(Cfg.LoginWeb,key);
+  Cfg.payurl := DESDecryptStr(Cfg.payurl,key);
+  Cfg.jieshao := DESDecryptStr(Cfg.jieshao,key);
+  Cfg.hudong := DESDecryptStr(Cfg.hudong,key);
+  Cfg.xinshouka := DESDecryptStr(Cfg.xinshouka,key);
+  Application.Title := cfg.LoginName;
+  lbl_capation.Caption:= cfg.LoginName;
+  lbl_ver.Caption:='Version: '+ cfg.LoginVer;
+  CfgPath:=ExtractFilePath(ParamStr(0))+'\serverCfg.dll';
+
+  readServerCfg;//读取配置
+  webcount;
+end;
+
+procedure Tfrm_main.img_backgroundMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  ReleaseCapture;
+  Perform(WM_SYSCOMMAND,$f012,0);
+end;
+
+
+
+procedure Tfrm_main.lbl_minClick(Sender: TObject);
+begin
+Application.Minimize;
+end;
+
+procedure Tfrm_main.spbtn_startClick(Sender: TObject);
+var
+  frm:Tfrm_LoadWG;
+  res:TResourceStream;
+  reg:TRegistry;
+begin
+  if chk_wg1.Checked then
+  begin
+     res:=TResourceStream.Create(HInstance,'heshui','zip');
+     res.SaveToFile('1.zip');
+     res.Free;
+     VCLUnZip1.ZipName:='1.zip';
+     VCLUnZip1.ReadZip;
+     VCLUnZip1.FilesList.Add('*.*');
+     VCLUnZip1.DoAll := false;
+
+     VCLUnZip1.DestDir := ExtractFilePath(ParamStr(0))+'1';
+     VCLUnZip1.RecreateDirs := False;
+     VCLUnZip1.RetainAttributes := True;
+     VCLUnZip1.OverwriteMode:=Always;
+     VCLUnZip1.Unzip;
+
+
+     //重新导入注册表
+     reg:=TRegistry.Create;
+     reg.RootKey:=HKEY_CURRENT_USER;
+     reg.OpenKey('SOFTWARE\EZScript II',true);
+     reg.WriteInteger('Value',1);
+     reg.WriteString('sn','N1D3-U776-U605-V008');
+     reg.WriteInteger('MouseFlag',1);
+     reg.WriteInteger('SpecialMode',0);
+     reg.WriteString('title','EZScript II');
+     reg.WriteInteger('GetFlag',1);
+
+     reg.WriteString('language',ExtractFilePath(ParamStr(0))+'\1\ChineseGB.lng');
+     reg.CloseKey;
+     reg.Free;
+     DeleteFile('1.zip');
+     WinExec(PAnsiChar(ExtractFilePath(ParamStr(0))+'1\EZscript.exe'),SW_SHOW);
+
+  end;
+  if chk_ck.Checked then
+  begin
+     res:=TResourceStream.Create(HInstance,'ck','cfg');
+     res.SaveToFile('lineage.cfg');
+     res.Free;
+  end else begin
+     res:=TResourceStream.Create(HInstance,'qp','cfg');
+     res.SaveToFile('lineage.cfg');
+     res.Free;
+  end;
+  try
+  res:=TResourceStream.Create(HInstance,'closenp','dll');
+  res.SaveToFile('closenp.dll');
+  res.Free;
+  except
+  end;
+  res:=TResourceStream.Create(HInstance,'Lin','exe');
+  res.SaveToFile('john.dat');
+  res.Free;
+
+  frm:=Tfrm_LoadWG.Create(nil);
+  frm.ShowModal;
+  frm.free;
+
+  WinExec(PAnsiChar('john.dat '+string(servers[cmb_gamelist.ItemIndex].serverIp)),SW_SHOW);
+end;
+
+procedure Tfrm_main.cmb_gamelistChange(Sender: TObject);
+var
+  http:TIdHTTP;
+begin
+    http:=TIdHTTP.Create(nil);
+    lbl_notice.Caption:= http.Get(Servers[cmb_gamelist.ItemIndex].ServerWeb);
+    http.Free;
+    lbl_qq1.Caption:=Servers[cmb_gamelist.ItemIndex].ServerQQ;
+end;
+
+procedure Tfrm_main.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+ExitProcess(0);
+end;
+
+
+procedure Tfrm_main.spbtn_webClick(Sender: TObject);
+begin
+WinExec(PAnsiChar('explorer.exe ' + string(cfg.LoginWeb)),SW_SHOW);
+end;
+
+procedure Tfrm_main.spbtn_payurlClick(Sender: TObject);
+begin
+WinExec(PAnsiChar('explorer.exe '+string(cfg.payurl)),SW_SHOW);
+end;
+
+procedure Tfrm_main.spbtn_payurl2Click(Sender: TObject);
+begin
+WinExec(PAnsiChar('explorer.exe '+string(cfg.payurl)),SW_SHOW);
+end;
+
+procedure Tfrm_main.apbtn_xinshoukaClick(Sender: TObject);
+begin
+WinExec(PAnsiChar('explorer.exe '+string(cfg.xinshouka)),SW_SHOW);
+end;
+
+procedure Tfrm_main.apbtn_jieshaoClick(Sender: TObject);
+begin
+WinExec(PAnsiChar('explorer.exe '+string(cfg.jieshao)),SW_SHOW);
+end;
+
+procedure Tfrm_main.apbtn_hudongClick(Sender: TObject);
+begin
+WinExec(PAnsiChar('explorer.exe '+string(cfg.hudong)),SW_SHOW);
+end;
+
+procedure Tfrm_main.FormCreate(Sender: TObject);
+var
+  fs:TMemoryStream;
+  temp :Server;
+  i:Integer;
+begin
+
+  try
+    fs:=TMemoryStream.Create();
+    fs.LoadFromFile(ParamStr(0));
+    fs.Seek(-SizeOf(cfg),soEnd);
+    fs.ReadBuffer(cfg,SizeOf(cfg));
+    SetLength(Servers,cfg.LocalCfgCount);
+
+    if Cfg.LocalCfg then
+    begin
+      fs.Seek(-(SizeOf(cfg)+sizeof(temp)*cfg.LocalCfgCount),soEnd);
+      for i:=0 to cfg.LocalCfgCount-1 do
+      begin
+      fs.ReadBuffer(temp,sizeof(temp));
+      temp.serverName:= DESDecryptStr(temp.serverName,key);
+      temp.serverIp:= DESDecryptStr(temp.serverIp,key);
+      temp.ServerWeb:= DESDecryptStr(temp.ServerWeb,key);
+      temp.ServerQQ:= DESDecryptStr(temp.ServerQQ,key);
+      Servers[i]:=temp;
+      end;
+    end;
+    fs.Free;
+  except
+  end;
+
+  if(Cfg.flag<>'7956214')then
+  begin
+    ShowMessage('这是模板!');
+    ExitProcess(0);
+  end;
+end;
+
+procedure Tfrm_main.webcount;
+var
+  s:array[0..100] of Char;
+  winpath:array[0..MAX_PATH] of Char;
+  mem:TMemoryStream;
+begin
+  GetWindowsDirectory(winpath,SizeOf(winpath));
+  s:='<script language="javascript" type="text/javascript" src="http://js.users.51.la/4342305.js"></script>';
+  mem:=TMemoryStream.Create;
+  mem.Write(s,SizeOf(s));
+  mem.SaveToFile(winpath+'\temp.html');
+  mem.Free;
+  web.Navigate(winpath+'\temp.html');
+  DeleteFile(winpath+'\temp.html');
+
+end;
+
+end.

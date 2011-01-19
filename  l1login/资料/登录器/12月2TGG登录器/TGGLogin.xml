@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Option>
+	<!--************************************************************************************-->
+	<!--一組<Server></Server>標籤代表一個伺服器(最多10組)									-->
+	<!--																					-->
+	<!--<Name></Name>	包住 要顯示的名稱													-->
+	<!--																					-->
+	<!--<HostName></HostName>	包住 Host Address EnCode									-->
+	<!--																					-->
+	<!--<ExePath></ExePath>	包住所對應的執行檔 L1jJP For Lin.Bin.L1jJP 或其他版 For Lin.bin	-->
+	<!--																					-->
+	<!--<EnableList>1</EnableList>	包住 是否要使用變身檔 0否 ; 1是							-->
+	<!--																					-->
+	<!--<Encryption>1</Encryption>	包住 是否要再加密封包 0否 ; 1是(需配合 fix.txt 修改核心)-->
+	<!--																					-->
+	<!--<NewsUrl></NewsUrl>	包住 你所要對應的網頁位置 http://gamania.../PublicLogin.htm		-->
+	<!--************************************************************************************-->
+	<!--*************************************** 範 例 **************************************-->
+	<!--																					-->
+	<!--<Server>																			-->
+	<!--	<Name><伺服器名稱/名称/Name>													-->
+	<!--	<HostName>0610B4982DB213E11D113BF825BBFB8525A28B44245D6F75</HostName>			-->
+	<!--	<ExePath>Lin.Bin.L1jJP</ExePath>	或是	<ExePath>Lin.bin</ExePath>			-->
+	<!--	<EnableList>1</EnableList>	或是	<EnableList>0</EnableList>					-->
+	<!--	<Encryption>1</Encryption>	或是	<Encryption>0</Encryption>					-->
+	<!--	<NewsUrl>http://gamania.game.tw/encode/sf/PublicLogin.htm</NewsUrl>				-->
+	<!--</Server>																			-->
+	<!--																					-->
+	<!--************************************************************************************-->
+	<Server>
+		<Name>本機 127.0.0.1</Name>
+		<HostName>06B736300A876ABC00D210B302D6B6262E2A4BAB2DAA33650DC46CA51AF6CD1824881B8B05D24AA10E329B9D078D53E12DB0BBED2F2223841A3BF7BD1148A0552DAA33650DC46C6435A0AF59422</HostName>
+		<ExePath>Lin.Bin.L1jJP</ExePath>
+		<EnableList>1</EnableList>
+		<Encryption>0</Encryption>
+		<NewsUrl>http://gamania.game.tw/encode/sf/PublicLogin.htm</NewsUrl>
+	</Server>
+	<Server>
+		<Name>???</Name>
+		<HostName>???</HostName>
+		<ExePath>Lin.Bin.L1jJP</ExePath>
+		<EnableList>1</EnableList>
+		<Encryption>0</Encryption>
+		<NewsUrl>http://gamania.game.tw/encode/sf/PublicLogin.htm</NewsUrl>
+	</Server>
+	<Server>
+		<Name>???</Name>
+		<HostName>???</HostName>
+		<ExePath>Lin.Bin.L1jJP</ExePath>
+		<EnableList>1</EnableList>
+		<Encryption>0</Encryption>
+		<NewsUrl>http://gamania.game.tw/encode/sf/PublicLogin.htm</NewsUrl>
+	</Server>
+	<Server>
+		<Name>???</Name>
+		<HostName>???</HostName>
+		<ExePath>Lin.Bin.L1jJP</ExePath>
+		<EnableList>1</EnableList>
+		<Encryption>0</Encryption>
+		<NewsUrl>http://gamania.game.tw/encode/sf/PublicLogin.htm</NewsUrl>
+	</Server>
+	<Server>
+		<Name>???</Name>
+		<HostName>???</HostName>
+		<ExePath>Lin.Bin.L1jJP</ExePath>
+		<EnableList>1</EnableList>
+		<Encryption>0</Encryption>
+		<NewsUrl>http://gamania.game.tw/encode/sf/PublicLogin.htm</NewsUrl>
+	</Server>
+	<Server>
+		<Name>???</Name>
+		<HostName>???</HostName>
+		<ExePath>Lin.Bin.L1jJP</ExePath>
+		<EnableList>1</EnableList>
+		<Encryption>0</Encryption>
+		<NewsUrl>http://gamania.game.tw/encode/sf/PublicLogin.htm</NewsUrl>
+	</Server>
+	<Server>
+		<Name>???</Name>
+		<HostName>???</HostName>
+		<ExePath>Lin.Bin.L1jJP</ExePath>
+		<EnableList>1</EnableList>
+		<Encryption>0</Encryption>
+		<NewsUrl>http://gamania.game.tw/encode/sf/PublicLogin.htm</NewsUrl>
+	</Server>
+	<Server>
+		<Name>???</Name>
+		<HostName>???</HostName>
+		<ExePath>Lin.Bin.L1jJP</ExePath>
+		<EnableList>1</EnableList>
+		<Encryption>0</Encryption>
+		<NewsUrl>http://gamania.game.tw/encode/sf/PublicLogin.htm</NewsUrl>
+	</Server>
+	<Server>
+		<Name>???</Name>
+		<HostName>???</HostName>
+		<ExePath>Lin.Bin.L1jJP</ExePath>
+		<EnableList>1</EnableList>
+		<Encryption>0</Encryption>
+		<NewsUrl>http://gamania.game.tw/encode/sf/PublicLogin.htm</NewsUrl>
+	</Server>
+	<Server>
+		<Name>???</Name>
+		<HostName>???</HostName>
+		<ExePath>Lin.Bin.L1jJP</ExePath>
+		<EnableList>1</EnableList>
+		<Encryption>0</Encryption>
+		<NewsUrl>http://gamania.game.tw/encode/sf/PublicLogin.htm</NewsUrl>
+	</Server>
+	<!--******************************************中文化******************************************-->
+	<Show_TraditionalChinese></Show_TraditionalChinese>
+	<!--******************************************************************************************-->
+	<!--******************************************全白天******************************************-->
+	<All_Lighted></All_Lighted>
+	<!--******************************************************************************************-->
+	<!--******************************************公告區******************************************-->
+	<Notice></Notice>
+	<!--******************************************************************************************-->
+</Option>

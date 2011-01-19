@@ -1,0 +1,5 @@
+[LoginUpdate]
+version=0108
+coerce=1
+0101=http://127.0.0.1/1.rar
+pathver=0101,0101

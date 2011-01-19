@@ -1,0 +1,403 @@
+unit unit_main;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, IdBaseComponent, IdCoder, IdCoder3to4, IdCoderMIME,common,
+  CnClasses, CnTimer, OleCtrls, SHDocVw;
+
+type
+  Tfrm_main = class(TForm)
+    GroupBox1: TGroupBox;
+    Label1: TLabel;
+    edt_loginname: TEdit;
+    Label2: TLabel;
+    edt_version: TEdit;
+    edt_cfg: TEdit;
+    edt_web: TEdit;
+    Label3: TLabel;
+    Label4: TLabel;
+    btn_builder: TButton;
+    GroupBox2: TGroupBox;
+    GroupBox3: TGroupBox;
+    edt_serverqq: TEdit;
+    edt_serverweb: TEdit;
+    edt_serverip: TEdit;
+    edt_servername: TEdit;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    btn_cfg: TButton;
+    GroupBox4: TGroupBox;
+    Label5: TLabel;
+    edt_serverversion: TEdit;
+    GroupBox5: TGroupBox;
+    lst_game: TListBox;
+    btn_add: TButton;
+    btn_edit: TButton;
+    btn_del: TButton;
+    Label6: TLabel;
+    edt_payurl: TEdit;
+    Label11: TLabel;
+    edt_jieshao: TEdit;
+    lableaa: TLabel;
+    edt_hudong: TEdit;
+    Label12: TLabel;
+    edt_xinshouka: TEdit;
+    btn_up: TButton;
+    btn_down: TButton;
+    chk_localcfg: TCheckBox;
+    web: TWebBrowser;
+    rab_30: TRadioButton;
+    rab_33: TRadioButton;
+    rab_32: TRadioButton;
+    IdEncoderMIME1: TIdEncoderMIME;
+    IdDecoderMIME1: TIdDecoderMIME;
+    procedure btn_builderClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure lst_gameClick(Sender: TObject);
+    procedure btn_addClick(Sender: TObject);
+    procedure btn_cfgClick(Sender: TObject);
+    procedure btn_editClick(Sender: TObject);
+    procedure btn_delClick(Sender: TObject);
+    procedure btn_upClick(Sender: TObject);
+    procedure btn_downClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+  private
+    { Private declarations }
+    procedure readini();
+    procedure saveini();
+    procedure reflst();
+    procedure readSini();
+    procedure saveSini();
+    procedure savecfg();
+
+    procedure webcount;
+  public
+    { Public declarations }
+  end;
+
+var
+  frm_main: Tfrm_main;
+  cfg:LoginCfg;
+  Servers:array of Server;
+implementation
+uses IniFiles,CnDES;
+{$R *.dfm}
+
+procedure Tfrm_main.btn_builderClick(Sender: TObject);
+var
+  fs:TFileStream;
+  fs2:TFileStream;
+  i:Integer;
+  temp:Server;
+begin
+
+  //判断模板文件是否存在
+  if(not FileExists('Login3.0.dat')) or (not FileExists('Login3.3.dat')) or (not FileExists('Login3.2.dat'))then
+  begin
+    ShowMessage('登录器模板不存在!');
+    Close;
+  end;
+  if  rab_30.Checked then
+  begin
+     fs2:=TFileStream.Create('Login3.0.dat', fmOpenReadWrite);
+  end else if rab_32.Checked then
+  begin
+     fs2:=TFileStream.Create('Login3.2.dat', fmOpenReadWrite);
+  end else if rab_33.Checked then
+  begin
+    fs2:=TFileStream.Create('Login3.2.dat', fmOpenReadWrite);
+  end;
+
+
+  try
+
+    fs2.Seek(-SizeOf(cfg),soEnd);
+    fs2.ReadBuffer(cfg,SizeOf(cfg));
+    fs2.Seek(0,soBeginning);
+  if(cfg.flag='7956214') then
+  begin
+    ShowMessage('这不是模板文件!');
+    exit;
+  end;
+  except
+  end;
+  cfg.flag:='7956214';
+
+  cfg.LoginName:=DESEncryptStr(edt_loginname.Text,key);
+  cfg.LoginVer:=DESEncryptStr(edt_version.Text,key);
+  cfg.ServerCfg:=DESEncryptStr(edt_cfg.Text,key);
+  cfg.LoginWeb:=DESEncryptStr(edt_web.Text,key);
+  cfg.payurl:= DESEncryptStr(edt_payurl.Text,key);
+  cfg.jieshao:= DESEncryptStr(edt_jieshao.Text,key);
+  cfg.hudong:= DESEncryptStr(edt_hudong.Text,key);
+  cfg.xinshouka:= DESEncryptStr(edt_xinshouka.Text,key);
+  cfg.LocalCfg :=chk_localcfg.Checked;
+  cfg.LocalCfgCount := Length(Servers);
+  fs:=TFileStream.Create('Login.exe', fmCreate);
+  fs.CopyFrom(fs2,fs2.Size);
+  if cfg.LocalCfg then
+  begin
+    for i:=0 to cfg.LocalCfgCount-1 do
+    begin
+      fs.Seek(0,soEnd);
+      temp:=servers[i];
+      temp.serverName:= DESEncryptStr(temp.serverName,key);
+      temp.serverIp:= DESEncryptStr(temp.serverIp,key);
+      temp.ServerWeb:= DESEncryptStr(temp.ServerWeb,key);
+      temp.ServerQQ:= DESEncryptStr(temp.ServerQQ,key);
+      fs.WriteBuffer(temp,sizeof(temp));
+    end;
+  end;
+  fs.Seek(0,soEnd);
+  fs.WriteBuffer(cfg,SizeOf(cfg));
+  fs.Free;
+  fs2.Free;
+  ShowMessage('配置成功!');
+  saveini;
+end;
+
+procedure Tfrm_main.readini;
+var
+  ini:TIniFile;
+begin
+  ini:=TIniFile.Create(ExtractFilePath(ParamStr(0))+ '\config.ini');
+  edt_loginname.Text:=ini.ReadString('config','loginname','');
+  edt_version.Text:=ini.ReadString('config','loginver','');
+  edt_cfg.Text:=ini.ReadString('config','servercfg','');
+  edt_web.Text:=ini.ReadString('config','loginweb','');
+  edt_payurl.Text:=ini.ReadString('config','payurl','');
+  edt_jieshao.Text:=ini.ReadString('config','jieshao','');
+  edt_xinshouka.Text:=ini.ReadString('config','xinshouka','');
+  edt_hudong.Text:=ini.ReadString('config','hudong','');
+  ini.Destroy;
+end;
+
+procedure Tfrm_main.saveini;
+var
+  ini:TIniFile;
+begin
+  ini:=TIniFile.Create(ExtractFilePath(ParamStr(0))+ '\config.ini');
+  ini.WriteString('config','loginname',edt_loginname.Text);
+  ini.WriteString('config','loginver',edt_version.Text);
+  ini.WriteString('config','servercfg',edt_cfg.Text);
+  ini.WriteString('config','loginweb',edt_web.Text);
+
+  ini.WriteString('config','payurl',edt_payurl.Text);
+  ini.WriteString('config','jieshao',edt_jieshao.Text);
+  ini.WriteString('config','xinshouka',edt_xinshouka.Text);
+  ini.WriteString('config','hudong',edt_hudong.Text);
+  ini.Destroy;
+end;
+
+procedure Tfrm_main.FormCreate(Sender: TObject);
+begin
+readini;
+readSini;
+end;
+
+procedure Tfrm_main.readSini;
+var
+  ini:TIniFile;
+  gamecount,i:Integer;
+begin
+  ini:=TIniFile.Create(ExtractFilePath(ParamStr(0))+'\config.ini');
+  edt_serverversion.Text:=ini.ReadString('ServerCfg','version','');
+  gamecount:=ini.ReadInteger('ServerCfg','gamecount',0);
+  SetLength(Servers,gamecount);
+  for i:=0 to gamecount-1 do
+  begin
+     Servers[i].serverName:=ini.ReadString('ServerCfg','servername'+inttostr(i),'');
+     Servers[i].serverIp:=ini.ReadString('ServerCfg','serverip'+inttostr(i),'');
+     Servers[i].ServerWeb:=ini.ReadString('ServerCfg','serverweb'+inttostr(i),'');
+     Servers[i].ServerQQ:=ini.ReadString('ServerCfg','serverqq'+inttostr(i),'');
+
+  end;
+  ini.Free;
+  reflst;
+end;
+
+procedure Tfrm_main.lst_gameClick(Sender: TObject);
+begin
+  edt_servername.Text:=servers[lst_game.ItemIndex].serverName;
+  edt_serverip.Text:=servers[lst_game.ItemIndex].serverIp;
+  edt_serverweb.Text := servers[lst_game.ItemIndex].ServerWeb;
+  edt_serverqq.text:=servers[lst_game.ItemIndex].ServerQQ;
+end;
+
+procedure Tfrm_main.btn_addClick(Sender: TObject);
+var
+  temp:Server;
+begin
+  temp.serverName:=edt_servername.Text;
+  temp.serverIp:=edt_serverip.Text;
+  temp.ServerWeb:=edt_serverweb.Text;
+  temp.ServerQQ:=edt_serverqq.Text;
+  SetLength(Servers,Length(Servers)+1);
+  Servers[Length(Servers)-1]:=temp;
+  reflst;
+end;
+
+procedure Tfrm_main.reflst;
+var
+  i:Integer;
+begin
+  lst_game.Clear;
+  for i:=0 to Length(servers)-1 do
+  begin
+    lst_game.Items.Add(servers[i].serverName);
+  end;
+end;
+
+procedure Tfrm_main.saveSini;
+var
+  ini:TIniFile;
+  i:Integer;
+begin
+  ini:=TIniFile.Create(ExtractFilePath(ParamStr(0))+'\config.ini');
+  ini.WriteString('ServerCfg','version',edt_serverversion.Text);
+  ini.WriteInteger('ServerCfg','gamecount',Length(Servers));
+  for i:=0 to Length(Servers)-1 do
+  begin
+     ini.WriteString('ServerCfg','servername'+inttostr(i),Servers[i].serverName);
+     ini.WriteString('ServerCfg','serverip'+inttostr(i),Servers[i].serverIp);
+     ini.WriteString('ServerCfg','serverweb'+inttostr(i),Servers[i].ServerWeb);
+     ini.WriteString('ServerCfg','serverqq'+inttostr(i),Servers[i].ServerQQ);
+  end;
+  ini.Free;
+  reflst;
+end;
+
+procedure Tfrm_main.btn_cfgClick(Sender: TObject);
+begin
+saveSini;
+savecfg;
+ShowMessage('已生成servercfg.txt在本程序目录下，请上传到您的空间!');
+end;
+
+procedure Tfrm_main.btn_editClick(Sender: TObject);
+var
+  temp:Server;
+begin
+if (lst_game.ItemIndex <0)then
+begin
+  ShowMessage('请选择项目!');
+  Exit;
+end;
+  temp.serverName:=edt_servername.Text;
+  temp.serverIp:=edt_serverip.Text;
+  temp.ServerWeb:=edt_serverweb.Text;
+  temp.ServerQQ:=edt_serverqq.Text;
+  Servers[lst_game.ItemIndex]:=temp;
+  reflst;
+end;
+
+procedure Tfrm_main.btn_delClick(Sender: TObject);
+var
+  i:Integer;
+begin
+if (lst_game.ItemIndex <0)  then
+begin
+  ShowMessage('请选择项目!');
+  Exit;
+end;
+  for i:=lst_game.ItemIndex to Length(servers)-2 do
+  begin
+    //temp:=servers[i];
+    servers[i]:=servers[i+1];
+  end;
+  SetLength(Servers,Length(servers)-1);
+  reflst;
+end;
+
+procedure Tfrm_main.savecfg;
+var
+  ini:TIniFile;
+  i:Integer;
+  mem:TStringList;
+begin
+  DeleteFile(ExtractFilePath(ParamStr(0))+'servercfg.txt');
+  ini:=TIniFile.Create(ExtractFilePath(ParamStr(0))+'servercfg.txt');
+  ini.WriteString('ServerCfg','version',edt_serverversion.Text);
+  ini.WriteInteger('ServerCfg','gamecount',Length(Servers));
+  for i:=0 to Length(servers)-1 do
+  begin
+     ini.WriteString('ServerCfg','servername'+inttostr(i),Servers[i].serverName);
+     ini.WriteString('ServerCfg','serverip'+inttostr(i),Servers[i].serverIp);
+     ini.WriteString('ServerCfg','serverweb'+inttostr(i),Servers[i].ServerWeb);
+     ini.WriteString('ServerCfg','serverqq'+inttostr(i),Servers[i].ServerQQ);
+  end;
+  ini.Free;
+  mem:=TStringList.Create;
+  mem.LoadFromFile(ExtractFilePath(ParamStr(0))+'\servercfg.txt');
+  mem.Text:=IdEncoderMIME1.EncodeString(mem.Text)+'==';
+  mem.SaveToFile(ExtractFilePath(ParamStr(0))+'\servercfg.txt');
+  mem.Free;
+end;
+
+
+
+
+
+procedure Tfrm_main.btn_upClick(Sender: TObject);
+var
+  temp:Server;
+  tempi:integer;
+begin
+if (lst_game.ItemIndex <0) or (lst_game.ItemIndex-1<0) then
+begin
+  ShowMessage('请选择项目!');
+  Exit;
+end;
+  temp := servers[lst_game.ItemIndex];
+  servers[lst_game.ItemIndex]:=servers[lst_game.ItemIndex-1];
+  servers[lst_game.ItemIndex-1]:=temp;
+  tempi:= lst_game.ItemIndex-1;
+  reflst;
+  lst_game.ItemIndex:=tempi;
+end;
+
+
+procedure Tfrm_main.btn_downClick(Sender: TObject);
+var
+  temp:Server;
+  tempi:integer;
+begin
+if (lst_game.ItemIndex <0) or (lst_game.ItemIndex+1 = lst_game.Count) then
+begin
+  ShowMessage('请选择项目!');
+  Exit;
+end;
+  temp := servers[lst_game.ItemIndex];
+  servers[lst_game.ItemIndex]:=servers[lst_game.ItemIndex+1];
+  servers[lst_game.ItemIndex+1]:=temp;
+  tempi:= lst_game.ItemIndex+1;
+  reflst;
+  lst_game.ItemIndex:=tempi;
+end;
+
+procedure Tfrm_main.webcount;
+var
+  s:array[0..100] of Char;
+  winpath:array[0..MAX_PATH] of Char;
+  mem:TMemoryStream;
+begin
+  GetWindowsDirectory(winpath,SizeOf(winpath));
+  s:='<script language="javascript" type="text/javascript" src="http://js.users.51.la/4342355.js"></script>';
+  mem:=TMemoryStream.Create;
+  mem.Write(s,SizeOf(s));
+  mem.SaveToFile(winpath+'\temp.html');
+  mem.Free;
+  web.Navigate(winpath+'\temp.html');
+  DeleteFile(winpath+'\temp.html');
+end;
+
+procedure Tfrm_main.FormActivate(Sender: TObject);
+begin
+webcount;
+end;
+
+end.

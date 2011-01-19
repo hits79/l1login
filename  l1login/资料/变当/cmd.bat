@@ -1,0 +1,1 @@
+brcc32.exe 2.rc

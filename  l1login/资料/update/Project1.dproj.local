@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2011-01-18 13:28:55.000.pas,C:\Documents and Settings\Administrator\My Documents\RAD Studio\Projects\Unit1.pas=C:\Documents and Settings\Administrator\桌面\update\Unit1.pas</Transaction>
+    <Transaction>2011-01-18 13:28:55.000.dfm,C:\Documents and Settings\Administrator\My Documents\RAD Studio\Projects\Unit1.dfm=C:\Documents and Settings\Administrator\桌面\update\Unit1.dfm</Transaction>
+    <Transaction>2011-01-18 13:28:55.515.dproj,C:\Documents and Settings\Administrator\My Documents\RAD Studio\Projects\Project1.dproj=C:\Documents and Settings\Administrator\桌面\update\Project1.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

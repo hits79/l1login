@@ -1,0 +1,29 @@
+﻿
+
+
+該 Lin.Bin.L1jJP 之運用檔案
+係日本 L1jJP 公開於網路提供下載的檔案
+http://umagonn.web.fc2.com/public.html
+該檔案與我們沒有半點關係 我們也不曾反組該檔案
+應該說 我們沒有能力 反組 或 修改 該檔案
+
+
+
+sprite\*.* 該內容應該是取自於 韓國測試伺服器 Test Server
+因為檔案都是取自網路 來源已不可考 唯一可確知的是 最終來源為 99
+
+
+
+EPU_PublicLogin.exe 與 TGGLogin.xml 及 list-c-c.txt
+以上檔案均為 T.G.G 臺灣 遊戲橘子 自製檔案
+可散發使用 本程式為免費程式 如果你被收費 請速通知我們處理
+http://gamania.game.tw/posting.php?mode=reply&f=2&t=29922
+
+本程式免費分享使用 但是我們建議你用於 官方 勿違法使用
+使用這個程式 可以有效的防止外掛 讓 天堂 乾乾淨淨 無污染
+大家都用 那麼 天堂 就不再有 掛機 了 通通手動來玩 真的很好
+
+如果您對於本程式有異議提出 請至以下連結 發文 告訴我們
+http://gamania.game.tw/posting.php?mode=reply&f=2&t=29922
+我們會在最短的時間內回應您 任何異議我們都會接受
+合理的說明 在合理的範圍內清楚說明 要我們砍檔案也行

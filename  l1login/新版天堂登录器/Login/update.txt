@@ -1,0 +1,7 @@
+[LoginUpdate]
+version=108
+coerce=0
+101=http://127.0.0.1/101.zip
+102=http://127.0.0.1/102.zip
+103=http://127.0.0.1/103.zip
+pathver=101
