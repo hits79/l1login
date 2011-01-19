@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2010-12-16 12:22:19.140.dproj,E:\天堂计划\天堂登陆器V3.0\Cfgconfig\Config.dproj=E:\天堂计划\天堂登陆器V3.0\Cfgconfig\列表生成器.dproj</Transaction>
+    <Transaction>2011-01-03 21:04:46.093.dproj,E:\天堂计划\新版天堂登录器\天堂登录器商业版\LoginConfig\列表生成器.dproj=E:\天堂计划\新版天堂登录器\天堂登录器商业版\LoginConfig\loginConfig.dproj</Transaction>
+    <Transaction>2011-01-03 21:04:58.609.dproj,E:\天堂计划\新版天堂登录器\天堂登录器商业版\LoginConfig\loginConfig.dproj=E:\天堂计划\新版天堂登录器\天堂登录器商业版\LoginConfig\LoginConfig.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

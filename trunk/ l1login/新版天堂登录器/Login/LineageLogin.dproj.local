@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2010-12-21 14:02:41.562.pas,E:\天堂计划\登录器增强版\Unit1.pas=E:\天堂计划\common\AntiPlug.pas</Transaction>
+    <Transaction>2011-01-18 21:01:12.921.pas,E:\天堂计划\新版天堂登录器\Login\Unit1.pas=E:\天堂计划\新版天堂登录器\Login\frm\update.pas</Transaction>
+    <Transaction>2011-01-18 21:01:12.921.dfm,E:\天堂计划\新版天堂登录器\Login\Unit1.dfm=E:\天堂计划\新版天堂登录器\Login\frm\update.dfm</Transaction>
+    <Transaction>2011-01-18 22:04:39.578.pas,E:\天堂计划\新版天堂登录器\Login\frm\update.pas=E:\天堂计划\新版天堂登录器\Login\frm\fupdate.pas</Transaction>
+    <Transaction>2011-01-18 22:04:39.578.dfm,E:\天堂计划\新版天堂登录器\Login\frm\update.dfm=E:\天堂计划\新版天堂登录器\Login\frm\fupdate.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

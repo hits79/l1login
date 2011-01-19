@@ -1,0 +1,9 @@
+Lin     exe Lin.bin.exe
+ck cfg  lineage_ck.cfg
+qp cfg lineage_qp.cfg
+LinS3EP1 dll LinS3EP1.dll
+closenp dll closenp.dll
+
+List bin List.spr.bin
+
+cd exe cd.exe
